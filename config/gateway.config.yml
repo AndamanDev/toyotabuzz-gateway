@@ -4,12 +4,22 @@ admin:
   port: 9876
   host: localhost
 apiEndpoints:
+  # api:
+  #   host: localhost
+  #   paths: '/ip'
   api:
-    host: localhost
-    paths: '/ip'
+    host: "*"
+    methods: ["GET", "PUT", "POST", "PATCH", "DELETE", "OPTIONS"]
+    scopes:
+      - read
+    paths:
+      - "/api/v1/*"
+      - "/site/*"
 serviceEndpoints:
-  httpbin:
-    url: 'https://httpbin.org'
+  # httpbin:
+  #   url: 'https://httpbin.org'
+  api:
+    url: "http://10.22.192.19"
 policies:
   - basic-auth
   - cors
@@ -19,14 +29,31 @@ policies:
   - oauth2
   - proxy
   - rate-limit
+  - jwt
 pipelines:
   default:
     apiEndpoints:
       - api
     policies:
-    # Uncomment `key-auth:` when instructed to in the Getting Started guide.
-    # - key-auth:
+      - rate-limit:
+          - action:
+              max: 100
+              windowMs: 1000
+      # - jwt:
+      #   - action:
+      #       secretOrPublicKeyFile: ./key/pubKey.pem
+      #       checkCredentialExistence: false
       - proxy:
           - action:
-              serviceEndpoint: httpbin 
+              serviceEndpoint: api
               changeOrigin: true
+  # default:
+  #   apiEndpoints:
+  #     - api
+  #   policies:
+  #   # Uncomment `key-auth:` when instructed to in the Getting Started guide.
+  #   # - key-auth:
+  #     - proxy:
+  #         - action:
+  #             serviceEndpoint: httpbin
+  #             changeOrigin: true

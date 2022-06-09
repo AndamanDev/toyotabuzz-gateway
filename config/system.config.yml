@@ -15,6 +15,13 @@ crypto:
 
 # OAuth2 Settings
 session:
+  # storeProvider: connect-redis
+  # storeOptions:
+  #   host: 127.0.0.1
+  #   port: 6379
+  # secret: keyboard cat # replace with secure key that will be used to sign session cookie
+  # resave: false
+  # saveUninitialized: false
   secret: keyboard cat
   resave: false
   saveUninitialized: false
